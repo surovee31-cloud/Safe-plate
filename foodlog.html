@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Log — SafePlate</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f9f9f9; color: #333; }
+        .navbar { display: flex; justify-content: space-between; align-items: center; background-color: #2c7a4b; padding: 15px 40px; position: sticky; top: 0; z-index: 100; }
+        .logo { color: white; font-size: 24px; font-weight: bold; }
+        .nav-links { list-style: none; display: flex; gap: 30px; }
+        .nav-links a { color: white; text-decoration: none; font-size: 16px; transition: color 0.3s; }
+        .nav-links a:hover { color: #a8f0c6; }
+        .page-header { background-color: #2c7a4b; color: white; text-align: center; padding: 50px 20px; }
+        .page-header h1 { font-size: 40px; margin-bottom: 10px; }
+        .page-header p { font-size: 18px; }
+        .log-section { padding: 60px 100px; }
+        .log-form-card { background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 2px solid #2c7a4b; max-width: 700px; margin: 0 auto 50px auto; }
+        .log-form-card h2 { font-size: 28px; color: #2c7a4b; margin-bottom: 25px; text-align: center; }
+        .form-group { margin-bottom: 25px; }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 8px; color: #2c7a4b; font-size: 16px; }
+        .form-group input, .form-group select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 15px; transition: border-color 0.3s; }
+        .form-group input:focus, .form-group select:focus { border-color: #2c7a4b; outline: none; }
+        .btn { background-color: #2c7a4b; color: white; padding: 12px 30px; border-radius: 8px; font-size: 18px; border: none; cursor: pointer; transition: background-color 0.3s; }
+        .btn:hover { background-color: #1f5c38; }
+        .log-table-section { max-width: 1000px; margin: 0 auto; }
+        .log-table-section h2 { font-size: 28px; color: #2c7a4b; margin-bottom: 20px; text-align: center; }
+        .safety-table { width: 100%; border-collapse: collapse; font-size: 15px; }
+        .safety-table th { background-color: #2c7a4b; color: white; padding: 12px 15px; text-align: left; }
+        .safety-table td { padding: 12px 15px; border-bottom: 1px solid #ddd; }
+        .safety-table tbody tr:nth-child(even) { background-color: #f0faf4; }
+        .safety-table tbody tr:hover { background-color: #c8e6c9; cursor: pointer; }
+        .video-section { padding: 60px 100px; text-align: center; background-color: #f0faf4; }
+        .video-section h2 { font-size: 32px; color: #2c7a4b; margin-bottom: 25px; }
+        .video-section iframe { border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); max-width: 100%; }
+        footer { background-color: #2c7a4b; color: white; text-align: center; padding: 25px; font-size: 14px; line-height: 2; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">🍽️ SafePlate</div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="checker.html">Risk Checker</a></li>
+            <li><a href="foodlog.html">Food Log</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <section class="page-header">
+        <h1>📋 Food Safety Log</h1>
+        <p>Record and track your food storage history.</p>
+    </section>
+
+    <section class="log-section">
+        <div class="log-form-card">
+            <h2>Add New Food Entry</h2>
+
+            <div class="form-group">
+                <label for="logFoodName">Food Name:</label>
+                <input type="text" id="logFoodName" placeholder="e.g. Chicken Curry">
+            </div>
+
+            <div class="form-group">
+                <label for="logFoodType">Food Type:</label>
+                <select id="logFoodType">
+                    <option value="">-- Select Type --</option>
+                    <option value="Raw Meat / Poultry">Raw Meat / Poultry</option>
+                    <option value="Dairy Products">Dairy Products</option>
+                    <option value="Cooked Rice / Pasta">Cooked Rice / Pasta</option>
+                    <option value="Seafood">Seafood</option>
+                    <option value="Vegetables / Fruits">Vegetables / Fruits</option>
+                    <option value="Eggs">Eggs</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="logTemp">Storage Temperature (°C):</label>
+                <input type="number" id="logTemp" placeholder="e.g. 4" min="-20" max="120">
+            </div>
+
+            <div class="form-group">
+                <label for="logHours">Hours in Storage:</label>
+                <input type="number" id="logHours" placeholder="e.g. 2" min="0" max="72">
+            </div>
+
+            <div class="form-group">
+                <label for="logDate">Date of Storage:</label>
+                <input type="date" id="logDate">
+            </div>
+
+            <div class="form-group">
+                <label for="logNotes">Notes:</label>
+                <input type="text" id="logNotes" placeholder="Any extra notes...">
+            </div>
+
+            <button class="btn" onclick="addFoodLog()">Add to Log →</button>
+        </div>
+
+        <div class="log-table-section">
+            <h2>Your Food Log</h2>
+            <table class="safety-table" id="logTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Food Name</th>
+                        <th>Type</th>
+                        <th>Temp (°C)</th>
+                        <th>Hours</th>
+                        <th>Date</th>
+                        <th>Risk</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody id="logTableBody"></tbody>
+            </table>
+            <p id="emptyMsg" style="text-align:center; color:#888; margin-top:20px;">No entries yet. Add your first food log above!</p>
+        </div>
+    </section>
+
+    <section class="video-section">
+        <h2>Learn About Food Safety</h2>
+        <iframe width="700" height="400"
+            src="https://www.youtube.com/embed/TQKQ6N-hTEg"
+            title="Food Safety Video"
+            frameborder="0"
+            allowfullscreen>
+        </iframe>
+    </section>
+
+    <footer>
+        <p>© 2026 SafePlate | Bangladesh Agricultural University</p>
+        <p>Designed for CSM 1206 Lab Project</p>
+    </footer>
+
+    <script>
+        let entryCount = 0;
+
+        function addFoodLog() {
+            const foodName = document.getElementById('logFoodName').value.trim();
+            const foodType = document.getElementById('logFoodType').value;
+            const temp = parseFloat(document.getElementById('logTemp').value);
+            const hours = parseFloat(document.getElementById('logHours').value);
+            const date = document.getElementById('logDate').value;
+            const notes = document.getElementById('logNotes').value.trim();
+
+            if (!foodName || !foodType || isNaN(temp) || isNaN(hours) || !date) {
+                alert('⚠️ Please fill in all required fields!');
+                return;
+            }
+
+            let risk = '';
+            if (temp <= -18) {
+                risk = '🟢 Very Safe';
+            } else if (temp < 5) {
+                risk = '🟢 Safe';
+            } else if (temp >= 5 && temp <= 60) {
+                if (hours <= 2) {
+                    risk = '🟡 Low Risk';
+                } else if (hours <= 4) {
+                    risk = '🔴 High Risk';
+                } else {
+                    risk = '☠️ Very High Risk';
+                }
+            } else {
+                if (hours <= 2) {
+                    risk = '🟡 Moderate';
+                } else {
+                    risk = '🔴 High Risk';
+                }
+            }
+
+            entryCount++;
+            const tbody = document.getElementById('logTableBody');
+            document.getElementById('emptyMsg').style.display = 'none';
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${entryCount}</td>
+                <td>${foodName}</td>
+                <td>${foodType}</td>
+                <td>${temp}</td>
+                <td>${hours}</td>
+                <td>${date}</td>
+                <td>${risk}</td>
+                <td>${notes || '—'}</td>
+            `;
+            tbody.appendChild(row);
+
+            document.getElementById('logFoodName').value = '';
+            document.getElementById('logFoodType').value = '';
+            document.getElementById('logTemp').value = '';
+            document.getElementById('logHours').value = '';
+            document.getElementById('logDate').value = '';
+            document.getElementById('logNotes').value = '';
+        }
+    </script>
+
+</body>
+</html>
